@@ -984,6 +984,7 @@ create_initial_dirs() {
     "${XDG_CACHE_HOME}/zsh" \
     "${XDG_CONFIG_HOME}/bat" \
     "${XDG_CONFIG_HOME}/btop/themes" \
+    "${XDG_CONFIG_HOME}/fastfetch" \
     "${XDG_CONFIG_HOME}/fzf" \
     "${XDG_CONFIG_HOME}/ghostty" \
     "${XDG_CONFIG_HOME}/git" \
