@@ -2459,8 +2459,8 @@ EOF
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   parse_args "${@}"
 
-  detect_env_results --gui-enabled
   verify_dotfriedrice_path
+  detect_env_results --gui-enabled
 
   if [ "${PULL}" != "1" ]; then
     detect_and_prepare_gpu
