@@ -2436,7 +2436,7 @@ ${C_WHITE}# Show debug information that you can paste into an issue.
 ${C_GREEN}dotfriedrice debug
 
 ${C_WHITE}# Show this help menu.
-${C_GREEN}dotfriedrice --help
+${C_GREEN}dotfriedrice help | --help | -h
 EOF
     exit
     ;;
