@@ -231,15 +231,15 @@ your local terminal's config will not get automatically updated.*
 
 **🚀 Keeping things up to date and tinkering**
 
-Once you've installed DotFriedRice you can run `cd "${DOTFRIEDRICE_PATH}"` to
+Once you've installed DotFriedRice you can run `cd $DOTFRIEDRICE_PATH` to
 manage it moving forward. There's also the `dfr` alias to move into that
-directory and open it in Neovim.
+directory and open it in your configured editor.
 
 Here's a few handy commands you can run from anywhere:
 
 - `dotfriedrice`
   - Install everything based on your local copy of DotFriedRice (you can run this regularly)
-  - Keeps your system up to date and apply local config changes
+  - Keeps your system up to date and applies local config changes
 - `dotfriedrice --skip-system-packages | -S`
   - The same as above but skip installing or updating packages
   - Helps regenerate symlinks, configs and everything else without modifying packages
