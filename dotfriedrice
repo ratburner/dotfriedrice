@@ -1385,8 +1385,8 @@ You can manually back these files up now while this prompt is running and
 then choose to overwrite them with option 1.
 ${C_WHITE}
 If you're on a fresh system with no terminal yet you can press Ctrl+Alt+F2 to
-use tty2 and then jump back to this script by pressing Ctrl+Alt+F1. If you're on
-a laptop you might need to also hold down Fn.${C_RESET}
+use tty2 to review them if desired and then jump back to this script by pressing
+Ctrl+Alt+F1. If you're on a laptop you might need to also hold down Fn.${C_RESET}
 EOF
 
     while true; do
