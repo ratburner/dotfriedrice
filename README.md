@@ -483,7 +483,7 @@ After logging in you'll be greeted with an empty desktop and a top bar:
   - There's a sound icon in the top right to pick your input and output devices
   - Alternatively you can run `wiremix` from a terminal
   - Both `mpd` and [rmpc](https://github.com/mierak/rmpc) are installed for playing music, configure your music directory!
-- Open a terminal and run `dt` to switch to the DotFriedRice repo and open it in Neovim
+- Open a terminal and run `dfr` to switch to the DotFriedRice repo and open it in Neovim
   - Explore `.config/niri/config.kdl` for a complete list of key binds
 - Have fun with *your* new system!
 
