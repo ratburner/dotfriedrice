@@ -8,8 +8,9 @@ In 1 command and ~5 minutes you can get a new or existing system set up with
 terminal based tools and workflows on Arch / Debian based Linux distros (WSL 2
 included) and macOS.
 
-If you're on an Arch based distro you can optionally set up a complete
-[niri](https://github.com/niri-wm/niri) based desktop environment.
+If you're on an Arch based distro you can optionally add a complete
+[niri](https://github.com/niri-wm/niri) based desktop environment in addition
+to having all of the command line tools.
 
 ### Philosophy
 
@@ -48,6 +49,7 @@ distro.*
 
 #### Highlights
 
+- ...includes everything in the command line version, plus:
 - niri *(Wayland compositor)*, Waybar *(status bar)*, Walker *(app launcher)* and friends
 - Hotkey focused but tons of mouse / trackpad support
 - Prefer TUI (Terminal User Interface) apps over GUI apps when possible
