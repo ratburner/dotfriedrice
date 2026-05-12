@@ -12,6 +12,13 @@ If you're on an Arch based distro you can optionally add a complete
 [niri](https://github.com/niri-wm/niri) based desktop environment in addition
 to having all of the command line tools.
 
+### Demo video
+
+A walkthrough of using, configuring and installing the niri based desktop
+environment and CLI tools:
+
+[![DotFriedRice](https://img.youtube.com/vi/RII3MI7xdeU/0.jpg)](https://www.youtube.com/watch?v=RII3MI7xdeU)
+
 ### Philosophy
 
 Just like fried rice, you can mix and match an assortment of flavors.
