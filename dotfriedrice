@@ -1090,8 +1090,8 @@ update_dotfriedrice() {
   fi
 }
 
-compare_install_config() {
-  _info "COMPARE INSTALL CONFIG"
+compare_dotfriedrice_config() {
+  _info "COMPARE DOTFRIEDRICE CONFIG"
 
   example_file="dotfriedrice-config.example"
   real_file="dotfriedrice-config"
@@ -2521,7 +2521,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
   [ "${PULL}" == "1" ] && exit
 
-  compare_install_config
+  compare_dotfriedrice_config
   ensure_sudo_works
   create_initial_dirs
   ask_for_name
