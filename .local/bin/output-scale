@@ -13,7 +13,7 @@ if [ -z "${NIRI_SOCKET}" ]; then
   exit 1
 fi
 
-readonly SCALES=(1.0 1.25 1.5 1.75 2.0 2.5 3.0 4.0)
+readonly SCALES=(1.0 1.25 1.5 1.75 2.0 2.5 3.0 4.0 5.0)
 
 scale_to_int() {
   # Convert scale string such as 1.5 or 1 to an integer (150, 100).
@@ -90,7 +90,7 @@ position_outputs() {
   local old_h="${8}"
 
   while read -r name x y; do
-    if [[ "${name}" == "${focused}" ]]; then
+    if [ "${name}" == "${focused}" ]; then
       continue
     fi
 
@@ -152,33 +152,33 @@ main() {
   local state_before
   state_before="$(niri msg --json outputs)"
 
-  local focused
-  focused="$(niri msg --json focused-output | jq -r '.name')"
+  local focused_output
+  focused_output="$(niri msg --json focused-output | jq -r '.name')"
 
-  read -r old_x old_y old_w old_h current_scale <<<"$(get_output_geometry "${state_before}" "${focused}")"
+  read -r old_x old_y old_w old_h current_scale <<<"$(get_output_geometry "${state_before}" "${focused_output}")"
 
-  local current_key current_index
-  current_key="$(scale_to_int "${current_scale}")"
-  current_index="$(scale_index "${current_key}")"
+  local current_scale_int current_scale_index
+  current_scale_int="$(scale_to_int "${current_scale}")"
+  current_scale_index="$(scale_index "${current_scale_int}")"
 
-  local target_scale
-  if ! target_scale="$(adjust_scale "${1:-cycle}" "${current_index}")"; then
+  local new_scale
+  if ! new_scale="$(adjust_scale "${1:-cycle}" "${current_scale_index}")"; then
     exit 1
   fi
 
-  niri msg output "${focused}" scale "${target_scale}"
+  niri msg output "${focused_output}" scale "${new_scale}"
 
   local state_after
   state_after="$(niri msg --json outputs)"
 
-  read -r new_w new_h <<<"$(get_output_size "${state_after}" "${focused}")"
+  read -r new_w new_h <<<"$(get_output_size "${state_after}" "${focused_output}")"
 
   local dx=$((new_w - old_w))
   local dy=$((new_h - old_h))
 
   position_outputs \
     "${state_before}" \
-    "${focused}" \
+    "${focused_output}" \
     "${dx}" \
     "${dy}" \
     "${old_x}" \
@@ -187,7 +187,7 @@ main() {
     "${old_h}"
 
   dfr-theme-set-bg --keep-current
-  notify-send "Output ${focused} scale: ${target_scale}x"
+  notify-send "Output ${focused_output} scale: ${new_scale}x"
 }
 
 main "${@}"
