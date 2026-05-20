@@ -443,6 +443,27 @@ _install_packages_arch() {
     PACKAGES_AUR_GUI_SKIP=()
   fi
 
+  # Normalize Pacman config before packages get installed.
+  local etc_pacman_conf_path="/etc/pacman.conf"
+
+  # Ensure multilib is disabled since we'll enable it with an include file,
+  # on vanilla Arch it's disabled but other variants might have it enabled.
+  if grep -q "^\[multilib\]" "${etc_pacman_conf_path}"; then
+    sudo sed -i "/^\[multilib\]/,+1 s/^/#/" "${etc_pacman_conf_path}"
+  fi
+
+  if compgen -G "/etc/pacman.d/*.conf" 1>/dev/null; then
+    if ! grep -q "Include = /etc/pacman\.d/\*\.conf" "${etc_pacman_conf_path}"; then
+      printf "\nInclude = /etc/pacman.d/*.conf\n" | sudo tee --append "${etc_pacman_conf_path}" 1>/dev/null
+    fi
+  else
+    # Pacman will fail to run if there's no conf files while this line exists
+    # so we can remove the line.
+    if grep -q "Include = /etc/pacman\.d/\*\.conf" "${etc_pacman_conf_path}"; then
+      sudo sed -i "\|Include = /etc/pacman.d/\*\.conf|d" "${etc_pacman_conf_path}"
+    fi
+  fi
+
   # Install Arch packages.
   _package_install pacman "${PACKAGES_PACMAN[@]}" "${PACKAGES_PACMAN_EXTRAS[@]}" "${PACKAGES_PACMAN_GUI[@]}" "${PACKAGES_PACMAN_GUI_EXTRAS[@]}"
 
@@ -1233,6 +1254,45 @@ ask_for_email() {
   YOUR_EMAIL="${email}"
 }
 
+install_programming_languages() {
+  _info "INSTALL PROGRAMMING LANGUAGES"
+
+  declare -A mise_languages
+
+  # Merge both arrays.
+  for key in "${!MISE_LANGUAGES[@]}"; do
+    mise_languages["${key}"]="${MISE_LANGUAGES[${key}]}"
+  done
+  for key in "${!MISE_LANGUAGES_EXTRAS[@]}"; do
+    mise_languages["${key}"]="${MISE_LANGUAGES_EXTRAS[${key}]}"
+  done
+
+  if ((${#mise_languages[@]} == 0)); then
+    _skipping "No languages set"
+    return
+  fi
+
+  for key in "${!mise_languages[@]}"; do
+    [[ "${key}" = "0" || -z "${mise_languages[${key}]}" ]] && continue
+
+    local mise_shim_path="${XDG_DATA_HOME}/mise/shims"
+
+    printf "\n%bInstalling %b:%b\n\n" "${C_BLUE}" "${mise_languages["${key}"]}" "${C_RESET}"
+    if command -v "${mise_shim_path}/${key}" 1>/dev/null; then
+      _skipping "Already installed, run 'mise upgrade ${key} --bump' to upgrade"
+    else
+      mise use --global "${mise_languages[${key}]}"
+    fi
+
+    # Also install Yarn for Node.
+    if [ "${key}" = "node" ]; then
+      if ! "${mise_shim_path}/yarn" --version >/dev/null 2>&1; then
+        "${mise_shim_path}/npm" install --unsafe-perm=true --allow-root --global yarn
+      fi
+    fi
+  done
+}
+
 install_configs() {
   local auto_confirm="${1:-"${CONFIG_INSTALL_AUTO_CONFIRM}"}"
 
@@ -1279,26 +1339,6 @@ install_configs() {
   fi
 
   if [ "${OS_DISTRO}" == "arch" ]; then
-    local etc_pacman_conf_path="/etc/pacman.conf"
-
-    # Ensure multilib is disabled since we'll enable it with an include file,
-    # on vanilla Arch it's disabled but other variants might have it enabled.
-    if grep -q "^\[multilib\]" "${etc_pacman_conf_path}"; then
-      sudo sed -i "/^\[multilib\]/,+1 s/^/#/" "${etc_pacman_conf_path}"
-    fi
-
-    if compgen -G "/etc/pacman.d/*.conf" 1>/dev/null; then
-      if ! grep -q "Include = /etc/pacman\.d/\*\.conf" "${etc_pacman_conf_path}"; then
-        printf "\nInclude = /etc/pacman.d/*.conf\n" | sudo tee --append "${etc_pacman_conf_path}" 1>/dev/null
-      fi
-    else
-      # Pacman will fail to run if there's no conf files while this line exists
-      # so we can remove the line.
-      if grep -q "Include = /etc/pacman\.d/\*\.conf" "${etc_pacman_conf_path}"; then
-        sudo sed -i "\|Include = /etc/pacman.d/\*\.conf|d" "${etc_pacman_conf_path}"
-      fi
-    fi
-
     # It's a bit more complicated to extract this into a variable since it has
     # a condition with a fallback. For now let's keep it hard coded until a
     # better pattern arrises to handle this in a dynamic way.
@@ -1436,45 +1476,6 @@ EOF
   else
     _install_packages_macos
   fi
-}
-
-install_programming_languages() {
-  _info "INSTALL PROGRAMMING LANGUAGES"
-
-  declare -A mise_languages
-
-  # Merge both arrays.
-  for key in "${!MISE_LANGUAGES[@]}"; do
-    mise_languages["${key}"]="${MISE_LANGUAGES[${key}]}"
-  done
-  for key in "${!MISE_LANGUAGES_EXTRAS[@]}"; do
-    mise_languages["${key}"]="${MISE_LANGUAGES_EXTRAS[${key}]}"
-  done
-
-  if ((${#mise_languages[@]} == 0)); then
-    _skipping "No languages set"
-    return
-  fi
-
-  for key in "${!mise_languages[@]}"; do
-    [[ "${key}" = "0" || -z "${mise_languages[${key}]}" ]] && continue
-
-    local mise_shim_path="${XDG_DATA_HOME}/mise/shims"
-
-    printf "\n%bInstalling %b:%b\n\n" "${C_BLUE}" "${mise_languages["${key}"]}" "${C_RESET}"
-    if command -v "${mise_shim_path}/${key}" 1>/dev/null; then
-      _skipping "Already installed, run 'mise upgrade ${key} --bump' to upgrade"
-    else
-      mise use --global "${mise_languages[${key}]}"
-    fi
-
-    # Also install Yarn for Node.
-    if [ "${key}" = "node" ]; then
-      if ! "${mise_shim_path}/yarn" --version >/dev/null 2>&1; then
-        "${mise_shim_path}/npm" install --unsafe-perm=true --allow-root --global yarn
-      fi
-    fi
-  done
 }
 
 install_fonts() {
@@ -2522,9 +2523,9 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   create_initial_dirs
   ask_for_name
   ask_for_email
-  install_configs
   install_packages
   install_programming_languages
+  install_configs
   install_fonts
   install_gui_themes
   install_zsh_plugins
