@@ -1343,6 +1343,17 @@ install_configs() {
       sudo rm -f "/etc/pacman.d/02-ignore.conf"
     fi
 
+    local pacman_contrib_config="/etc/conf.d/pacman-contrib"
+
+    # The default pacman-contrib config will get overwritten on the first run
+    # but this triggers a warning message that looks scary and 99.999% of the
+    # time, overwriting it will be what's picked so let's just do it.
+    #
+    # However, we will leave a backup file as a record of the change.
+    if [[ "${DOTFRIEDRICE_FIRST_RUN}" == "1" && -f "${pacman_contrib_config}" && ! -L "${pacman_contrib_config}" ]]; then
+      sudo mv "${pacman_contrib_config}" "${pacman_contrib_config}.bak"
+    fi
+
     _config_install_display "Configs (Arch)" "${config_install_arch[@]}"
   fi
 
