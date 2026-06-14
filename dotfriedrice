@@ -42,8 +42,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
   SKIP_SYSTEM_PACKAGES="0"
 
-  DOTFRIEDRICE_CLONE_URL="${DOTFRIEDRICE_CLONE_URL:-https://github.com/nickjj/dotfriedrice}"
-  DOTFRIEDRICE_UPSTREAM_URL="${DOTFRIEDRICE_UPSTREAM_URL:-https://github.com/nickjj/dotfriedrice}"
+  DOTFRIEDRICE_CLONE_URL="${DOTFRIEDRICE_CLONE_URL:-https://github.com/ratburner/dotfriedrice}"
+  DOTFRIEDRICE_UPSTREAM_URL="${DOTFRIEDRICE_UPSTREAM_URL:-https://github.com/ratburner/dotfriedrice}"
   DOTFRIEDRICE_BRANCH="${DOTFRIEDRICE_BRANCH:-master}"
 
   YOUR_NAME="${YOUR_NAME:-}"

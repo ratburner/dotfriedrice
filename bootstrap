@@ -40,7 +40,7 @@ export GUI_ENABLED="0"
 
 export DOTFRIEDRICE_PATH="${DOTFRIEDRICE_PATH:-"${HOME}/dotfriedrice"}"
 export DOTFRIEDRICE_BRANCH="${DOTFRIEDRICE_BRANCH:-master}"
-export DOTFRIEDRICE_CLONE_URL="${DOTFRIEDRICE_CLONE_URL:-https://github.com/nickjj/dotfriedrice}"
+export DOTFRIEDRICE_CLONE_URL="${DOTFRIEDRICE_CLONE_URL:-https://github.com/ratburner/dotfriedrice}"
 export DOTFRIEDRICE_UPSTREAM_URL="${DOTFRIEDRICE_UPSTREAM_URL:-"${DOTFRIEDRICE_CLONE_URL}"}"
 
 for arg in "${@}"; do
